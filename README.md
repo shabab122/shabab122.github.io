@@ -2,6 +2,10 @@
 
 A responsive, single-page professional portfolio based on the supplied reference layout and rebuilt around Shabab Ahmed's résumé, public GitHub projects, technical skills, education, and competitive-programming profiles.
 
+## Live Portfolio
+
+[View the live portfolio](https://shabab122.github.io/)
+
 ## Open the portfolio
 
 No installation or build command is required.
