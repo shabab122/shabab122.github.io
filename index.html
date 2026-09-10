@@ -45,10 +45,10 @@
         <nav class="main-nav" id="mainNav" aria-label="Main navigation">
           <div class="nav-links">
             <a href="#about">About</a>
-            <a href="#projects">Projects</a>
             <a href="#problem-solving">Problem Solving</a>
+            <a href="#projects">Projects</a>
             <a href="#skills">Skills</a>
-            <a href="#education">Education</a>
+            <!-- <a href="#education">Education</a> -->
             <a href="#contact">Contact</a>
           </div>
 
@@ -74,11 +74,11 @@
             <a class="secondary-button" href="assets/Shabab_Ahmed_Resume_V2.pdf" target="_blank" rel="noreferrer">Open résumé <span aria-hidden="true">↗</span></a>
           </div>
 
-          <ul class="quick-facts" aria-label="Quick facts">
+          <!-- <ul class="quick-facts" aria-label="Quick facts">
             <li><span>Study</span><strong>BSc in CSE</strong></li>
             <li><span>University</span><strong>UIU, Dhaka</strong></li>
             <li><span>Graduation</span><strong>Expected 2027</strong></li>
-          </ul>
+          </ul> -->
         </div>
 
         <aside class="identity-card" aria-label="Profile card">
@@ -87,7 +87,7 @@
           </div>
           <div class="identity-copy">
             <h2>Shabab Ahmed</h2>
-            <p>Aspiring Software Engineer</p>
+            <p>Software Engineer</p>
             <span>BSc in CSE · United International University</span>
             <span>Dhaka, Bangladesh</span>
           </div>
@@ -104,6 +104,51 @@
             </a>
           </div>
         </aside>
+      </section>
+
+      <section class="section" id="problem-solving" aria-labelledby="problemSolvingHeading">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Live activity</p>
+            <h2 id="problemSolvingHeading">Problem Solving</h2>
+          </div>
+          <p>These public profile statistics refresh automatically whenever the portfolio opens, with the latest verified data kept as a fallback.</p>
+        </div>
+
+        <div class="profile-grid" aria-live="polite">
+          <article class="coding-profile codeforces-card" data-platform-card="codeforces" aria-busy="true">
+            <a class="platform-heading" href="https://codeforces.com/profile/shabab_sa" target="_blank" rel="noreferrer" aria-label="Open Shabab Ahmed's Codeforces profile">
+              <span class="platform-logo codeforces-logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="0" y="7.5" width="6" height="13.5" rx="1.5" fill="#1f8acb"/><rect x="9" y="3" width="6" height="18" rx="1.5" fill="#f6c945"/><rect x="18" y="10.5" width="6" height="10.5" rx="1.5" fill="#e8504f"/></svg>
+              </span>
+              <span><strong>Codeforces</strong><small>@shabab_sa</small></span>
+              <i aria-hidden="true">↗</i>
+            </a>
+            <div class="profile-stats">
+              <span><strong data-stat="cf-solved">232</strong><small>Unique problems solved</small></span>
+              <span><strong data-stat="cf-rating">1,221</strong><small>Current rating</small></span>
+              <span><strong data-stat="cf-rank">Pupil</strong><small>Current rank</small></span>
+            </div>
+            <div class="live-status is-loading" data-live-status="codeforces"><i aria-hidden="true"></i><span>Refreshing live data…</span></div>
+          </article>
+
+          <article class="coding-profile leetcode-card" data-platform-card="leetcode" aria-busy="true">
+            <a class="platform-heading" href="https://leetcode.com/u/Shabab01/" target="_blank" rel="noreferrer" aria-label="Open Shabab Ahmed's LeetCode profile">
+              <span class="platform-logo leetcode-logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.527 5.527 0 0 0 .062 2.362 5.938 5.938 0 0 0 1.62 2.835l4.152 4.706.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392a1.38 1.38 0 0 0-1.948-1.958l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263.014-.614.252-1.199.685-1.687L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831a1.38 1.38 0 0 0 1.733-2.15l-3.5-2.831a5.962 5.962 0 0 0-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0z"/><path d="M10.617 12.815a1.382 1.382 0 0 0 0 2.764H20.79a1.382 1.382 0 0 0 0-2.764z"/></svg>
+              </span>
+              <span><strong>LeetCode</strong><small>@Shabab01</small></span>
+              <i aria-hidden="true">↗</i>
+            </a>
+            <div class="profile-stats">
+              <span><strong data-stat="lc-solved">270</strong><small>Total solved</small></span>
+              <span><strong data-stat="lc-ranking">581,150</strong><small>Global rank</small></span>
+              <span><strong data-stat="lc-breakdown">110 · 140 · 20</strong><small>Easy · Medium · Hard</small></span>
+            </div>
+            <div class="live-status is-loading" data-live-status="leetcode"><i aria-hidden="true"></i><span>Refreshing live data…</span></div>
+          </article>
+        </div>
+        <noscript><p class="noscript-note">Enable JavaScript to refresh the public profile statistics automatically.</p></noscript>
       </section>
 
       <section class="section" id="projects" aria-labelledby="projectsHeading">
@@ -167,19 +212,6 @@
             </ul>
             <a class="project-link" href="https://github.com/shabab122/Pdf-Rag-Study-Assistant" target="_blank" rel="noreferrer">View repository <span aria-hidden="true">↗</span></a>
           </article>
-
-          <article class="project-card project-card-featured">
-            <div class="project-topline">
-              <span class="project-index">05 / MERN</span>
-              <span class="project-state">CRUD application</span>
-            </div>
-            <h3>Student Management System</h3>
-            <p>A MERN application for creating, viewing, updating, deleting, and searching student records, with responsive tables and validation across both the frontend and backend.</p>
-            <ul class="tech-tags" aria-label="Student Management System technologies">
-              <li>React</li><li>Vite</li><li>Node.js</li><li>Express.js</li><li>MongoDB</li><li>Mongoose</li>
-            </ul>
-            <a class="project-link" href="https://github.com/shabab122/module-17-assignment" target="_blank" rel="noreferrer">View repository <span aria-hidden="true">↗</span></a>
-          </article>
         </div>
 
         <div class="subsection-heading">
@@ -232,51 +264,6 @@
         </div>
       </section>
 
-      <section class="section" id="problem-solving" aria-labelledby="problemSolvingHeading">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Live activity</p>
-            <h2 id="problemSolvingHeading">Problem Solving</h2>
-          </div>
-          <p>These public profile statistics refresh automatically whenever the portfolio opens, with the latest verified data kept as a fallback.</p>
-        </div>
-
-        <div class="profile-grid" aria-live="polite">
-          <article class="coding-profile codeforces-card" data-platform-card="codeforces" aria-busy="true">
-            <a class="platform-heading" href="https://codeforces.com/profile/shabab_sa" target="_blank" rel="noreferrer" aria-label="Open Shabab Ahmed's Codeforces profile">
-              <span class="platform-logo codeforces-logo" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><rect x="0" y="7.5" width="6" height="13.5" rx="1.5" fill="#1f8acb"/><rect x="9" y="3" width="6" height="18" rx="1.5" fill="#f6c945"/><rect x="18" y="10.5" width="6" height="10.5" rx="1.5" fill="#e8504f"/></svg>
-              </span>
-              <span><strong>Codeforces</strong><small>@shabab_sa</small></span>
-              <i aria-hidden="true">↗</i>
-            </a>
-            <div class="profile-stats">
-              <span><strong data-stat="cf-solved">232</strong><small>Unique problems solved</small></span>
-              <span><strong data-stat="cf-rating">1,221</strong><small>Current rating</small></span>
-              <span><strong data-stat="cf-rank">Pupil</strong><small>Current rank</small></span>
-            </div>
-            <div class="live-status is-loading" data-live-status="codeforces"><i aria-hidden="true"></i><span>Refreshing live data…</span></div>
-          </article>
-
-          <article class="coding-profile leetcode-card" data-platform-card="leetcode" aria-busy="true">
-            <a class="platform-heading" href="https://leetcode.com/u/Shabab01/" target="_blank" rel="noreferrer" aria-label="Open Shabab Ahmed's LeetCode profile">
-              <span class="platform-logo leetcode-logo" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.527 5.527 0 0 0 .062 2.362 5.938 5.938 0 0 0 1.62 2.835l4.152 4.706.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392a1.38 1.38 0 0 0-1.948-1.958l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263.014-.614.252-1.199.685-1.687L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831a1.38 1.38 0 0 0 1.733-2.15l-3.5-2.831a5.962 5.962 0 0 0-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0z"/><path d="M10.617 12.815a1.382 1.382 0 0 0 0 2.764H20.79a1.382 1.382 0 0 0 0-2.764z"/></svg>
-              </span>
-              <span><strong>LeetCode</strong><small>@Shabab01</small></span>
-              <i aria-hidden="true">↗</i>
-            </a>
-            <div class="profile-stats">
-              <span><strong data-stat="lc-solved">270</strong><small>Total solved</small></span>
-              <span><strong data-stat="lc-ranking">581,150</strong><small>Global rank</small></span>
-              <span><strong data-stat="lc-breakdown">110 · 140 · 20</strong><small>Easy · Medium · Hard</small></span>
-            </div>
-            <div class="live-status is-loading" data-live-status="leetcode"><i aria-hidden="true"></i><span>Refreshing live data…</span></div>
-          </article>
-        </div>
-        <noscript><p class="noscript-note">Enable JavaScript to refresh the public profile statistics automatically.</p></noscript>
-      </section>
-
       <section class="section" id="skills" aria-labelledby="skillsHeading">
         <div class="section-heading">
           <div>
@@ -315,7 +302,7 @@
         </div>
       </section>
 
-      <section class="section" id="education" aria-labelledby="educationHeading">
+      <!-- <section class="section" id="education" aria-labelledby="educationHeading">
         <div class="section-heading">
           <div>
             <p class="section-kicker">Academic background</p>
@@ -352,7 +339,7 @@
             </div>
           </article>
         </div>
-      </section>
+      </section> -->
 
       <section class="section contact-section" id="contact" aria-labelledby="contactHeading">
         <div class="contact-card">
@@ -369,7 +356,7 @@
       </section>
     </main>
 
-    <footer class="footer">
+    <!-- <footer class="footer">
       <div class="bottom-rule" aria-hidden="true"></div>
       <div class="footer-content">
         <div>
@@ -379,7 +366,7 @@
         <p>Built with semantic HTML, modern CSS, and JavaScript.</p>
         <a href="#about">Back to top <span aria-hidden="true">↑</span></a>
       </div>
-    </footer>
+    </footer> -->
   </div>
 
   <script src="assets/js/main.js" defer></script>
