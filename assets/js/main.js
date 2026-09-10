@@ -119,7 +119,238 @@ function setCurrentYear() {
   if (year) year.textContent = String(new Date().getFullYear());
 }
 
+const LIVE_STATS_CACHE_KEY = "shabab-live-profile-stats-v1";
+const numberFormatter = new Intl.NumberFormat("en-US");
+let lastLiveRefresh = 0;
+
+function setStatValue(key, value) {
+  const element = document.querySelector(`[data-stat="${key}"]`);
+  if (element) element.textContent = value;
+}
+
+function setPlatformStatus(platform, state, message) {
+  const card = document.querySelector(`[data-platform-card="${platform}"]`);
+  const status = document.querySelector(`[data-live-status="${platform}"]`);
+
+  card?.setAttribute("aria-busy", state === "loading" ? "true" : "false");
+  if (!status) return;
+
+  status.classList.remove("is-loading", "is-live", "is-fallback");
+  status.classList.add(`is-${state}`);
+
+  const text = status.querySelector("span");
+  if (text) text.textContent = message;
+}
+
+function formatNumber(value) {
+  return Number.isFinite(value) ? numberFormatter.format(value) : "—";
+}
+
+function requireNumber(value, fieldName) {
+  if (value === null || value === undefined || value === "") {
+    throw new Error(`Missing ${fieldName}`);
+  }
+
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) throw new Error(`Invalid ${fieldName}`);
+  return parsed;
+}
+
+function titleCase(value) {
+  return String(value || "Unrated")
+    .split(/\s+/)
+    .map((word) => word ? word[0].toUpperCase() + word.slice(1).toLowerCase() : "")
+    .join(" ");
+}
+
+function formatCachedTime(timestamp) {
+  if (!Number.isFinite(timestamp)) return "earlier";
+
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    }).format(new Date(timestamp));
+  } catch (error) {
+    return "earlier";
+  }
+}
+
+function readCachedStats() {
+  try {
+    const value = JSON.parse(localStorage.getItem(LIVE_STATS_CACHE_KEY) || "{}");
+    return value && typeof value === "object" ? value : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function cachePlatformStats(platform, stats) {
+  try {
+    const cache = readCachedStats();
+    cache[platform] = { ...stats, updatedAt: Date.now() };
+    localStorage.setItem(LIVE_STATS_CACHE_KEY, JSON.stringify(cache));
+  } catch (error) {
+    // Live data still works when browser storage is unavailable.
+  }
+}
+
+function applyCodeforcesStats(stats) {
+  setStatValue("cf-solved", formatNumber(stats.solved));
+  setStatValue("cf-rating", formatNumber(stats.rating));
+  setStatValue("cf-rank", titleCase(stats.rank));
+}
+
+function applyLeetCodeStats(stats) {
+  setStatValue("lc-total", formatNumber(stats.totalSolved));
+  setStatValue("lc-solved", formatNumber(stats.totalSolved));
+  setStatValue("lc-ranking", formatNumber(stats.ranking));
+  setStatValue(
+    "lc-difficulty",
+    `${formatNumber(stats.easySolved)} · ${formatNumber(stats.mediumSolved)} · ${formatNumber(stats.hardSolved)}`
+  );
+  setStatValue(
+    "lc-breakdown",
+    `${formatNumber(stats.easySolved)} · ${formatNumber(stats.mediumSolved)} · ${formatNumber(stats.hardSolved)}`
+  );
+}
+
+async function fetchJson(url, timeoutMs = 22000) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+      signal: controller.signal
+    });
+
+    if (!response.ok) throw new Error(`Request failed with ${response.status}`);
+    return await response.json();
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
+async function fetchCodeforcesStats() {
+  const handle = "shabab_sa";
+  const [profilePayload, submissionsPayload] = await Promise.all([
+    fetchJson(`https://codeforces.com/api/user.info?handles=${encodeURIComponent(handle)}`),
+    fetchJson(`https://codeforces.com/api/user.status?handle=${encodeURIComponent(handle)}&from=1&count=10000`, 28000)
+  ]);
+
+  if (profilePayload.status !== "OK" || submissionsPayload.status !== "OK") {
+    throw new Error("Codeforces returned an unsuccessful response");
+  }
+
+  const profile = profilePayload.result?.[0];
+  if (!profile) throw new Error("Codeforces profile not found");
+
+  const solvedProblems = new Set(
+    (submissionsPayload.result || [])
+      .filter((submission) => submission.verdict === "OK" && submission.problem)
+      .map((submission) => {
+        const problem = submission.problem;
+        const source = problem.contestId ?? problem.problemsetName ?? "unknown";
+        return `${source}:${problem.index ?? ""}:${problem.name ?? ""}`;
+      })
+  );
+
+  return {
+    solved: solvedProblems.size,
+    rating: requireNumber(profile.rating, "Codeforces rating"),
+    rank: profile.rank || "unrated"
+  };
+}
+
+function parseLeetCodeStats(payload) {
+  return {
+    totalSolved: requireNumber(payload.solvedProblem ?? payload.totalSolved, "LeetCode solved total"),
+    ranking: requireNumber(payload.ranking, "LeetCode ranking"),
+    easySolved: requireNumber(payload.easySolved, "LeetCode easy total"),
+    mediumSolved: requireNumber(payload.mediumSolved, "LeetCode medium total"),
+    hardSolved: requireNumber(payload.hardSolved, "LeetCode hard total")
+  };
+}
+
+async function fetchLeetCodeStats() {
+  const username = "Shabab01";
+
+  try {
+    const [solvedPayload, profilePayload] = await Promise.all([
+      fetchJson(`https://alfa-leetcode-api.onrender.com/${encodeURIComponent(username)}/solved`, 16000),
+      fetchJson(`https://alfa-leetcode-api.onrender.com/${encodeURIComponent(username)}`, 16000)
+    ]);
+
+    return parseLeetCodeStats({ ...solvedPayload, ranking: profilePayload.ranking });
+  } catch (primaryError) {
+    const fallbackPayload = await fetchJson(
+      `https://leetcode-api-faisalshohag.vercel.app/${encodeURIComponent(username)}`,
+      16000
+    );
+    return parseLeetCodeStats(fallbackPayload);
+  }
+}
+
+async function refreshPlatform(platform, fetchStats, applyStats) {
+  setPlatformStatus(platform, "loading", "Refreshing live data…");
+
+  try {
+    const stats = await fetchStats();
+    applyStats(stats);
+    cachePlatformStats(platform, stats);
+    setPlatformStatus(platform, "live", "Live · updated just now");
+  } catch (error) {
+    const cached = readCachedStats()[platform];
+
+    if (cached) {
+      applyStats(cached);
+      setPlatformStatus(platform, "fallback", `Refresh unavailable · cached ${formatCachedTime(cached.updatedAt)}`);
+    } else {
+      setPlatformStatus(platform, "fallback", "Live refresh unavailable · showing last verified data");
+    }
+  }
+}
+
+function applyInitialCachedStats() {
+  const cache = readCachedStats();
+
+  if (cache.codeforces) {
+    applyCodeforcesStats(cache.codeforces);
+    setPlatformStatus("codeforces", "loading", `Cached ${formatCachedTime(cache.codeforces.updatedAt)} · refreshing…`);
+  }
+
+  if (cache.leetcode) {
+    applyLeetCodeStats(cache.leetcode);
+    setPlatformStatus("leetcode", "loading", `Cached ${formatCachedTime(cache.leetcode.updatedAt)} · refreshing…`);
+  }
+}
+
+function refreshLiveProfiles() {
+  lastLiveRefresh = Date.now();
+  void Promise.allSettled([
+    refreshPlatform("codeforces", fetchCodeforcesStats, applyCodeforcesStats),
+    refreshPlatform("leetcode", fetchLeetCodeStats, applyLeetCodeStats)
+  ]);
+}
+
+function initializeLiveProfiles() {
+  applyInitialCachedStats();
+  refreshLiveProfiles();
+
+  document.addEventListener("visibilitychange", () => {
+    const refreshAge = Date.now() - lastLiveRefresh;
+    if (document.visibilityState === "visible" && refreshAge > 10 * 60 * 1000) {
+      refreshLiveProfiles();
+    }
+  });
+}
+
 initializeTheme();
 initializeMobileNavigation();
 initializeActiveSection();
 setCurrentYear();
+initializeLiveProfiles();
