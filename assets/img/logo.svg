@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
-  <title id="title">Shabab Ahmed monogram</title>
-  <desc id="desc">The initials S and A inside a rounded dashed frame.</desc>
-  <rect width="96" height="96" rx="24" fill="#08111f"/>
-  <rect x="7" y="7" width="82" height="82" rx="19" fill="none" stroke="#67e8f9" stroke-width="3" stroke-dasharray="9 6"/>
-  <text x="48" y="59" text-anchor="middle" fill="#f8fafc" font-family="Georgia, serif" font-size="41" font-weight="700" letter-spacing="-4">SA</text>
-  <circle cx="76" cy="76" r="5" fill="#38bdf8"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title"><title id="title">Shabab Ahmed monogram</title><rect width="96" height="96" rx="25" fill="#6541d8"/><text x="47" y="60" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="37" font-weight="700" letter-spacing="-2">SA</text><circle cx="75" cy="73" r="4" fill="#c9b6ff"/></svg>

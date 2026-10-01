@@ -1,356 +1,157 @@
-const THEME_STORAGE_KEY = "shabab-portfolio-theme";
+'use strict';
 
-const themeIcons = {
-  dark: `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="4"></circle>
-      <path d="M12 2.5v2.2M12 19.3v2.2M4.75 4.75l1.55 1.55M17.7 17.7l1.55 1.55M2.5 12h2.2M19.3 12h2.2M4.75 19.25l1.55-1.55M17.7 6.3l1.55-1.55"></path>
-    </svg>`,
-  light: `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M20 15.1A8.35 8.35 0 0 1 8.9 4 8.35 8.35 0 1 0 20 15.1Z"></path>
-    </svg>`
+const THEME_KEY='shabab-portfolio-theme';
+const STATS_KEY='shabab-profile-stats-v2';
+const SNAPSHOT_TIME=Date.UTC(2026,9,1);
+const snapshots={
+  codeforces:{solved:242,rating:1407,rank:'Specialist',updatedAt:SNAPSHOT_TIME},
+  leetcode:{totalSolved:273,ranking:580980,easySolved:111,mediumSolved:142,hardSolved:20,updatedAt:SNAPSHOT_TIME}
 };
+const numbers=new Intl.NumberFormat('en-US');
 
-function applyTheme(theme) {
-  const validTheme = theme === "light" ? "light" : "dark";
-  const themeToggle = document.getElementById("themeToggle");
-  const themeIcon = themeToggle?.querySelector(".theme-icon");
-
-  document.documentElement.dataset.theme = validTheme;
-
-  if (themeIcon) {
-    themeIcon.innerHTML = themeIcons[validTheme];
+function initializeTheme(){
+  const button=document.getElementById('themeToggle');
+  function apply(theme){
+    document.documentElement.dataset.theme=theme;
+    const next=theme==='light'?'dark':'light';
+    button.setAttribute('aria-label',`Switch to ${next} theme`);
+    button.title=`Switch to ${next} theme`;
+    button.querySelector('use').setAttribute('href',theme==='light'?'#i-moon':'#i-sun');
+    document.querySelector('meta[name="theme-color"]').content=theme==='light'?'#f7f7f2':'#141613';
   }
-
-  if (themeToggle) {
-    const nextTheme = validTheme === "dark" ? "light" : "dark";
-    themeToggle.setAttribute("aria-label", `Switch to ${nextTheme} theme`);
-    themeToggle.setAttribute("title", `Switch to ${nextTheme} theme`);
-  }
+  apply(document.documentElement.dataset.theme==='dark'?'dark':'light');
+  button.hidden=false;
+  button.addEventListener('click',()=>{
+    const theme=document.documentElement.dataset.theme==='light'?'dark':'light';apply(theme);
+    try{localStorage.setItem(THEME_KEY,theme);}catch(_){/* Storage is optional. */}
+  });
 }
 
-function initializeTheme() {
-  const themeToggle = document.getElementById("themeToggle");
-  const initialTheme = document.documentElement.dataset.theme || "dark";
-
-  applyTheme(initialTheme);
-
-  themeToggle?.addEventListener("click", () => {
-    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    applyTheme(nextTheme);
-
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-    } catch (error) {
-      // Theme still works when browser storage is unavailable.
+function initializeNavigation(){
+  const button=document.getElementById('menuToggle'),nav=document.getElementById('mainNav');
+  const mobile=matchMedia('(max-width:680px)');
+  function close(restoreFocus=false){
+    const wasOpen=button.getAttribute('aria-expanded')==='true';
+    button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Open navigation');
+    nav.classList.remove('is-open');document.body.classList.remove('menu-open');
+    if(restoreFocus&&wasOpen)button.focus();
+  }
+  document.documentElement.classList.add('nav-enhanced');button.hidden=false;
+  button.addEventListener('click',()=>{
+    if(button.getAttribute('aria-expanded')==='true')return close();
+    button.setAttribute('aria-expanded','true');button.setAttribute('aria-label','Close navigation');
+    nav.classList.add('is-open');document.body.classList.add('menu-open');nav.querySelector('a').focus();
+  });
+  nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>close()));
+  document.addEventListener('click',event=>{if(!nav.contains(event.target)&&!button.contains(event.target))close();});
+  document.addEventListener('keydown',event=>{
+    if(button.getAttribute('aria-expanded')!=='true'||!mobile.matches)return;
+    if(event.key==='Escape'){event.preventDefault();close(true);}
+    if(event.key==='Tab'){
+      const items=[button,...nav.querySelectorAll('a')];
+      if(event.shiftKey&&document.activeElement===items[0]){event.preventDefault();items.at(-1).focus();}
+      else if(!event.shiftKey&&document.activeElement===items.at(-1)){event.preventDefault();items[0].focus();}
     }
   });
-}
-
-function initializeMobileNavigation() {
-  const menuToggle = document.getElementById("menuToggle");
-  const mainNav = document.getElementById("mainNav");
-
-  if (!menuToggle || !mainNav) return;
-
-  const closeMenu = () => {
-    menuToggle.setAttribute("aria-expanded", "false");
-    mainNav.classList.remove("is-open");
-  };
-
-  menuToggle.addEventListener("click", () => {
-    const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
-    menuToggle.setAttribute("aria-expanded", String(!isOpen));
-    mainNav.classList.toggle("is-open", !isOpen);
-  });
-
-  mainNav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", closeMenu);
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
-      menuToggle.focus();
-    }
-  });
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 900) closeMenu();
-  });
-}
-
-function initializeActiveSection() {
-  if (!("IntersectionObserver" in window)) return;
-
-  const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
-  const sections = links
-    .map((link) => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
-
-  const observer = new IntersectionObserver((entries) => {
-    const visibleEntry = entries
-      .filter((entry) => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-    if (!visibleEntry) return;
-
-    links.forEach((link) => {
-      const isActive = link.getAttribute("href") === `#${visibleEntry.target.id}`;
-      link.classList.toggle("is-active", isActive);
-
-      if (isActive) {
-        link.setAttribute("aria-current", "location");
-      } else {
-        link.removeAttribute("aria-current");
-      }
-    });
-  }, {
-    rootMargin: "-22% 0px -63% 0px",
-    threshold: [0, 0.2, 0.5]
-  });
-
-  sections.forEach((section) => observer.observe(section));
-}
-
-function setCurrentYear() {
-  const year = document.getElementById("currentYear");
-  if (year) year.textContent = String(new Date().getFullYear());
-}
-
-const LIVE_STATS_CACHE_KEY = "shabab-live-profile-stats-v1";
-const numberFormatter = new Intl.NumberFormat("en-US");
-let lastLiveRefresh = 0;
-
-function setStatValue(key, value) {
-  const element = document.querySelector(`[data-stat="${key}"]`);
-  if (element) element.textContent = value;
-}
-
-function setPlatformStatus(platform, state, message) {
-  const card = document.querySelector(`[data-platform-card="${platform}"]`);
-  const status = document.querySelector(`[data-live-status="${platform}"]`);
-
-  card?.setAttribute("aria-busy", state === "loading" ? "true" : "false");
-  if (!status) return;
-
-  status.classList.remove("is-loading", "is-live", "is-fallback");
-  status.classList.add(`is-${state}`);
-
-  const text = status.querySelector("span");
-  if (text) text.textContent = message;
-}
-
-function formatNumber(value) {
-  return Number.isFinite(value) ? numberFormatter.format(value) : "—";
-}
-
-function requireNumber(value, fieldName) {
-  if (value === null || value === undefined || value === "") {
-    throw new Error(`Missing ${fieldName}`);
+  mobile.addEventListener('change',()=>close());
+  const links=[...nav.querySelectorAll('a[href^="#"]')],sections=links.map(link=>document.getElementById(link.hash.slice(1)));
+  let scheduled=false,current='';
+  function update(){
+    scheduled=false;let active=sections[0];
+    for(const section of sections)if(section.getBoundingClientRect().top<=170)active=section;
+    if(current===active.id)return;current=active.id;
+    links.forEach(link=>{const selected=link.hash===`#${active.id}`;link.classList.toggle('is-active',selected);if(selected)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});
   }
-
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) throw new Error(`Invalid ${fieldName}`);
-  return parsed;
+  function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(update);}}
+  addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);addEventListener('portfolio:filter',schedule);update();
 }
 
-function titleCase(value) {
-  return String(value || "Unrated")
-    .split(/\s+/)
-    .map((word) => word ? word[0].toUpperCase() + word.slice(1).toLowerCase() : "")
-    .join(" ");
+function initializeProjects(){
+  const filters=document.getElementById('projectFilters'),buttons=[...filters.querySelectorAll('button')];
+  const cards=[...document.querySelectorAll('#featuredProjects .project-card')];filters.hidden=false;
+  buttons.forEach(button=>button.addEventListener('click',()=>{
+    const filter=button.dataset.filter;
+    buttons.forEach(item=>{const selected=item===button;item.classList.toggle('is-selected',selected);item.setAttribute('aria-pressed',String(selected));});
+    cards.forEach(card=>{card.hidden=filter!=='all'&&card.dataset.category!==filter;});
+    const count=cards.filter(card=>!card.hidden).length;
+    document.querySelector('.featured-label .count').textContent=String(count).padStart(2,'0');
+    document.getElementById('filterStatus').textContent=`${count} featured projects shown. ${button.textContent}.`;
+    dispatchEvent(new Event('portfolio:filter'));
+  }));
 }
 
-function formatCachedTime(timestamp) {
-  if (!Number.isFinite(timestamp)) return "earlier";
-
-  try {
-    return new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit"
-    }).format(new Date(timestamp));
-  } catch (error) {
-    return "earlier";
-  }
-}
-
-function readCachedStats() {
-  try {
-    const value = JSON.parse(localStorage.getItem(LIVE_STATS_CACHE_KEY) || "{}");
-    return value && typeof value === "object" ? value : {};
-  } catch (error) {
-    return {};
-  }
-}
-
-function cachePlatformStats(platform, stats) {
-  try {
-    const cache = readCachedStats();
-    cache[platform] = { ...stats, updatedAt: Date.now() };
-    localStorage.setItem(LIVE_STATS_CACHE_KEY, JSON.stringify(cache));
-  } catch (error) {
-    // Live data still works when browser storage is unavailable.
-  }
-}
-
-function applyCodeforcesStats(stats) {
-  setStatValue("cf-solved", formatNumber(stats.solved));
-  setStatValue("cf-rating", formatNumber(stats.rating));
-  setStatValue("cf-rank", titleCase(stats.rank));
-}
-
-function applyLeetCodeStats(stats) {
-  setStatValue("lc-total", formatNumber(stats.totalSolved));
-  setStatValue("lc-solved", formatNumber(stats.totalSolved));
-  setStatValue("lc-ranking", formatNumber(stats.ranking));
-  setStatValue(
-    "lc-difficulty",
-    `${formatNumber(stats.easySolved)} · ${formatNumber(stats.mediumSolved)} · ${formatNumber(stats.hardSolved)}`
-  );
-  setStatValue(
-    "lc-breakdown",
-    `${formatNumber(stats.easySolved)} · ${formatNumber(stats.mediumSolved)} · ${formatNumber(stats.hardSolved)}`
-  );
-}
-
-async function fetchJson(url, timeoutMs = 22000) {
-  const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const response = await fetch(url, {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-      signal: controller.signal
-    });
-
-    if (!response.ok) throw new Error(`Request failed with ${response.status}`);
-    return await response.json();
-  } finally {
-    window.clearTimeout(timeout);
-  }
-}
-
-async function fetchCodeforcesStats() {
-  const handle = "shabab_sa";
-  const [profilePayload, submissionsPayload] = await Promise.all([
-    fetchJson(`https://codeforces.com/api/user.info?handles=${encodeURIComponent(handle)}`),
-    fetchJson(`https://codeforces.com/api/user.status?handle=${encodeURIComponent(handle)}&from=1&count=10000`, 28000)
-  ]);
-
-  if (profilePayload.status !== "OK" || submissionsPayload.status !== "OK") {
-    throw new Error("Codeforces returned an unsuccessful response");
-  }
-
-  const profile = profilePayload.result?.[0];
-  if (!profile) throw new Error("Codeforces profile not found");
-
-  const solvedProblems = new Set(
-    (submissionsPayload.result || [])
-      .filter((submission) => submission.verdict === "OK" && submission.problem)
-      .map((submission) => {
-        const problem = submission.problem;
-        const source = problem.contestId ?? problem.problemsetName ?? "unknown";
-        return `${source}:${problem.index ?? ""}:${problem.name ?? ""}`;
-      })
-  );
-
-  return {
-    solved: solvedProblems.size,
-    rating: requireNumber(profile.rating, "Codeforces rating"),
-    rank: profile.rank || "unrated"
-  };
-}
-
-function parseLeetCodeStats(payload) {
-  return {
-    totalSolved: requireNumber(payload.solvedProblem ?? payload.totalSolved, "LeetCode solved total"),
-    ranking: requireNumber(payload.ranking, "LeetCode ranking"),
-    easySolved: requireNumber(payload.easySolved, "LeetCode easy total"),
-    mediumSolved: requireNumber(payload.mediumSolved, "LeetCode medium total"),
-    hardSolved: requireNumber(payload.hardSolved, "LeetCode hard total")
-  };
-}
-
-async function fetchLeetCodeStats() {
-  const username = "Shabab01";
-
-  try {
-    const [solvedPayload, profilePayload] = await Promise.all([
-      fetchJson(`https://alfa-leetcode-api.onrender.com/${encodeURIComponent(username)}/solved`, 16000),
-      fetchJson(`https://alfa-leetcode-api.onrender.com/${encodeURIComponent(username)}`, 16000)
-    ]);
-
-    return parseLeetCodeStats({ ...solvedPayload, ranking: profilePayload.ranking });
-  } catch (primaryError) {
-    const fallbackPayload = await fetchJson(
-      `https://leetcode-api-faisalshohag.vercel.app/${encodeURIComponent(username)}`,
-      16000
-    );
-    return parseLeetCodeStats(fallbackPayload);
-  }
-}
-
-async function refreshPlatform(platform, fetchStats, applyStats) {
-  setPlatformStatus(platform, "loading", "Refreshing live data…");
-
-  try {
-    const stats = await fetchStats();
-    applyStats(stats);
-    cachePlatformStats(platform, stats);
-    setPlatformStatus(platform, "live", "Live · updated just now");
-  } catch (error) {
-    const cached = readCachedStats()[platform];
-
-    if (cached) {
-      applyStats(cached);
-      setPlatformStatus(platform, "fallback", `Refresh unavailable · cached ${formatCachedTime(cached.updatedAt)}`);
-    } else {
-      setPlatformStatus(platform, "fallback", "Live refresh unavailable · showing last verified data");
-    }
-  }
-}
-
-function applyInitialCachedStats() {
-  const cache = readCachedStats();
-
-  if (cache.codeforces) {
-    applyCodeforcesStats(cache.codeforces);
-    setPlatformStatus("codeforces", "loading", `Cached ${formatCachedTime(cache.codeforces.updatedAt)} · refreshing…`);
-  }
-
-  if (cache.leetcode) {
-    applyLeetCodeStats(cache.leetcode);
-    setPlatformStatus("leetcode", "loading", `Cached ${formatCachedTime(cache.leetcode.updatedAt)} · refreshing…`);
-  }
-}
-
-function refreshLiveProfiles() {
-  lastLiveRefresh = Date.now();
-  void Promise.allSettled([
-    refreshPlatform("codeforces", fetchCodeforcesStats, applyCodeforcesStats),
-    refreshPlatform("leetcode", fetchLeetCodeStats, applyLeetCodeStats)
-  ]);
-}
-
-function initializeLiveProfiles() {
-  applyInitialCachedStats();
-  refreshLiveProfiles();
-
-  document.addEventListener("visibilitychange", () => {
-    const refreshAge = Date.now() - lastLiveRefresh;
-    if (document.visibilityState === "visible" && refreshAge > 10 * 60 * 1000) {
-      refreshLiveProfiles();
-    }
+function initializeContact(){
+  const button=document.getElementById('copyEmail'),status=document.getElementById('copyStatus');let timer;
+  if(!navigator.clipboard?.writeText)return;button.hidden=false;
+  button.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText('imshababahmed@gmail.com');status.textContent='Copied!';}
+    catch(_){status.textContent='Select the address to copy.';}
+    clearTimeout(timer);timer=setTimeout(()=>{status.textContent='';},4000);
   });
 }
 
-initializeTheme();
-initializeMobileNavigation();
-initializeActiveSection();
-setCurrentYear();
-initializeLiveProfiles();
+// Live APIs enhance the static snapshots. A failed request never hides content.
+function readCache(){
+  try{const value=JSON.parse(localStorage.getItem(STATS_KEY)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}
+  catch(_){return {};}
+}
+function count(value){
+  if(value===null||value===undefined||value==='')throw new Error('Missing statistic');
+  const parsed=Number(value);if(!Number.isInteger(parsed)||parsed<0)throw new Error('Invalid statistic');return parsed;
+}
+function validate(platform,stats){
+  if(!stats||typeof stats!=='object')throw new Error('Invalid profile');
+  if(platform==='codeforces')return {solved:count(stats.solved),rating:stats.rating==null?null:count(stats.rating),rank:String(stats.rank||'Unrated').slice(0,40)};
+  const parsed={totalSolved:count(stats.totalSolved),ranking:stats.ranking==null?null:count(stats.ranking),easySolved:count(stats.easySolved),mediumSolved:count(stats.mediumSolved),hardSolved:count(stats.hardSolved)};
+  if(parsed.easySolved+parsed.mediumSolved+parsed.hardSolved!==parsed.totalSolved)throw new Error('Inconsistent totals');return parsed;
+}
+function latestSaved(platform){
+  const cached=readCache()[platform];
+  if(cached&&Number.isFinite(cached.updatedAt)&&cached.updatedAt>SNAPSHOT_TIME&&cached.updatedAt<=Date.now()+60000){
+    try{return {...validate(platform,cached),updatedAt:cached.updatedAt};}catch(_){/* Ignore corrupt or stale cache. */}
+  }
+  return snapshots[platform];
+}
+function save(platform,stats){try{const cache=readCache();cache[platform]={...stats,updatedAt:Date.now()};localStorage.setItem(STATS_KEY,JSON.stringify(cache));}catch(_){}}
+function setStat(key,value){const el=document.querySelector(`[data-stat="${key}"]`);if(el)el.textContent=typeof value==='number'?numbers.format(value):value??'—';}
+function applyStats(platform,stats){
+  if(platform==='codeforces'){setStat('cf-solved',stats.solved);setStat('cf-rating',stats.rating);setStat('cf-rank',stats.rank.replace(/\b\w/g,letter=>letter.toUpperCase()));}
+  else{setStat('lc-solved',stats.totalSolved);setStat('lc-ranking',stats.ranking);setStat('lc-easy',stats.easySolved);setStat('lc-medium',stats.mediumSolved);setStat('lc-hard',stats.hardSolved);}
+}
+function setStatus(platform,state,message){
+  const status=document.querySelector(`[data-live-status="${platform}"]`);
+  document.querySelector(`[data-platform-card="${platform}"]`).setAttribute('aria-busy',String(state==='loading'));
+  status.className=`live-status is-${state}`;status.querySelector('span').textContent=message;
+}
+function savedLabel(timestamp){return 'Snapshot · '+new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric'}).format(timestamp);}
+async function fetchJson(url,timeout=12000){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
+  try{const response=await fetch(url,{cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}});if(!response.ok)throw new Error(`API ${response.status}`);return await response.json();}
+  finally{clearTimeout(timer);}
+}
+async function fetchCodeforces(){
+  const [info,submissions]=await Promise.all([fetchJson('https://codeforces.com/api/user.info?handles=shabab_sa'),fetchJson('https://codeforces.com/api/user.status?handle=shabab_sa&from=1&count=10000')]);
+  if(info.status!=='OK'||submissions.status!=='OK'||!info.result?.[0]||!Array.isArray(submissions.result))throw new Error('Codeforces unavailable');
+  // Preserve the saved count rather than publishing a truncated history.
+  if(submissions.result.length===10000)throw new Error('Full submission history required');
+  const unique=new Set(submissions.result.filter(item=>item.verdict==='OK'&&item.problem).map(item=>{const p=item.problem;return `${p.contestId??p.problemsetName??'unknown'}:${p.index??p.name}`;}));
+  return validate('codeforces',{solved:unique.size,rating:info.result[0].rating,rank:info.result[0].rank||'Unrated'});
+}
+async function fetchLeetCode(){
+  try{const [solved,profile]=await Promise.all([fetchJson('https://alfa-leetcode-api.onrender.com/Shabab01/solved'),fetchJson('https://alfa-leetcode-api.onrender.com/Shabab01')]);return validate('leetcode',{...solved,totalSolved:solved.solvedProblem??solved.totalSolved,ranking:profile.ranking});}
+  catch(_){const p=await fetchJson('https://leetcode-api-faisalshohag.vercel.app/Shabab01',9000);return validate('leetcode',{...p,totalSolved:p.totalSolved??p.solvedProblem});}
+}
+async function refreshPlatform(platform,fetchStats){
+  const saved=latestSaved(platform);applyStats(platform,saved);setStatus(platform,'loading','Refreshing profile…');
+  try{const stats=await fetchStats();applyStats(platform,stats);save(platform,stats);setStatus(platform,'live','Live · updated just now');}
+  catch(_){setStatus(platform,'fallback',savedLabel(saved.updatedAt));}
+}
+function initializeProfiles(){
+  let lastRefresh=0,refreshing=false;
+  async function refresh(){if(refreshing)return;refreshing=true;lastRefresh=Date.now();try{await Promise.allSettled([refreshPlatform('codeforces',fetchCodeforces),refreshPlatform('leetcode',fetchLeetCode)]);}finally{refreshing=false;}}
+  void refresh();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastRefresh>600000)void refresh();});
+}
+
+initializeTheme();initializeNavigation();initializeProjects();initializeContact();
+document.getElementById('currentYear').textContent=String(new Date().getFullYear());
+initializeProfiles();
