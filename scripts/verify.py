@@ -48,7 +48,7 @@ def verify(directory):
     errors = page.errors
     if len(page.ids) != len(set(page.ids)):
         errors.append('Duplicate HTML IDs')
-    if page.sections != ['about','problem-solving','projects','skills','education','contact']:
+    if page.sections != ['about','problem-solving','tools','projects','education','contact']:
         errors.append(f'Unexpected section order: {page.sections}')
     if page.projects != EXPECTED:
         errors.append(f'Unexpected featured repository order: {page.projects}')

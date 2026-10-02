@@ -2,10 +2,10 @@
 
 const THEME_KEY='shabab-portfolio-theme';
 const STATS_KEY='shabab-profile-stats-v2';
-const SNAPSHOT_TIME=Date.UTC(2026,9,1);
+const SNAPSHOT_TIME=Date.UTC(2026,9,2,18,50);
 const snapshots={
   codeforces:{solved:242,rating:1407,rank:'Specialist',updatedAt:SNAPSHOT_TIME},
-  leetcode:{totalSolved:273,ranking:580980,easySolved:111,mediumSolved:142,hardSolved:20,updatedAt:SNAPSHOT_TIME}
+  leetcode:{totalSolved:273,ranking:581623,easySolved:111,mediumSolved:142,hardSolved:20,updatedAt:SNAPSHOT_TIME}
 };
 const numbers=new Intl.NumberFormat('en-US');
 
@@ -42,7 +42,6 @@ function initializeNavigation(){
     button.setAttribute('aria-expanded','true');button.setAttribute('aria-label','Close navigation');
     nav.classList.add('is-open');document.body.classList.add('menu-open');nav.querySelector('a').focus();
   });
-  nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>close()));
   document.addEventListener('click',event=>{if(!nav.contains(event.target)&&!button.contains(event.target))close();});
   document.addEventListener('keydown',event=>{
     if(button.getAttribute('aria-expanded')!=='true'||!mobile.matches)return;
@@ -55,29 +54,47 @@ function initializeNavigation(){
   });
   mobile.addEventListener('change',()=>close());
   const links=[...nav.querySelectorAll('a[href^="#"]')],sections=links.map(link=>document.getElementById(link.hash.slice(1)));
-  let scheduled=false,current='';
+  let scheduled=false,current='',pending=null,anchor=null,pendingTimer;
+  function activate(section){
+    if(current===section.id)return;current=section.id;
+    links.forEach(link=>{const selected=link.hash===`#${section.id}`;link.classList.toggle('is-active',selected);if(selected)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});
+  }
+  function cancelPending(){pending=null;anchor=null;clearTimeout(pendingTimer);schedule();}
   function update(){
-    scheduled=false;let active=sections[0];
-    for(const section of sections)if(section.getBoundingClientRect().top<=170)active=section;
-    if(current===active.id)return;current=active.id;
-    links.forEach(link=>{const selected=link.hash===`#${active.id}`;link.classList.toggle('is-active',selected);if(selected)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});
+    scheduled=false;
+    const header=document.querySelector('.site-header').getBoundingClientRect().height;
+    const marker=header+30,root=document.scrollingElement;
+    const atEnd=root.scrollHeight>innerHeight+2&&Math.ceil(root.scrollTop+innerHeight)>=root.scrollHeight-2;
+    if(pending){
+      const box=pending.getBoundingClientRect(),top=box.top;
+      const padding=parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)||0;
+      const targetScroll=root.scrollTop+top-padding,maxScroll=root.scrollHeight-innerHeight;
+      const clampedTarget=atEnd&&targetScroll>=maxScroll-2&&box.bottom>header&&box.top<innerHeight;
+      const arrived=(top>=-2&&top<=marker)||clampedTarget||(root.scrollTop<=2&&pending===sections[0]);
+      if(!arrived){activate(pending);return;}
+      anchor={section:pending,scrollY:root.scrollTop};pending=null;clearTimeout(pendingTimer);
+    }
+    if(anchor){
+      const box=anchor.section.getBoundingClientRect();
+      if(Math.abs(root.scrollTop-anchor.scrollY)<2&&box.bottom>header&&box.top<innerHeight){activate(anchor.section);return;}
+      anchor=null;
+    }
+    let active=sections[0];
+    for(const section of sections)if(section.getBoundingClientRect().top<=marker)active=section;
+    // The final card cannot always reach the header before scrolling stops.
+    if(atEnd)active=sections.at(-1);
+    activate(active);
   }
   function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(update);}}
-  addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);addEventListener('portfolio:filter',schedule);update();
-}
-
-function initializeProjects(){
-  const filters=document.getElementById('projectFilters'),buttons=[...filters.querySelectorAll('button')];
-  const cards=[...document.querySelectorAll('#featuredProjects .project-card')];filters.hidden=false;
-  buttons.forEach(button=>button.addEventListener('click',()=>{
-    const filter=button.dataset.filter;
-    buttons.forEach(item=>{const selected=item===button;item.classList.toggle('is-selected',selected);item.setAttribute('aria-pressed',String(selected));});
-    cards.forEach(card=>{card.hidden=filter!=='all'&&card.dataset.category!==filter;});
-    const count=cards.filter(card=>!card.hidden).length;
-    document.querySelector('.featured-label .count').textContent=String(count).padStart(2,'0');
-    document.getElementById('filterStatus').textContent=`${count} featured projects shown. ${button.textContent}.`;
-    dispatchEvent(new Event('portfolio:filter'));
+  links.forEach(link=>link.addEventListener('click',()=>{
+    clearTimeout(pendingTimer);anchor=null;pending=document.getElementById(link.hash.slice(1));
+    activate(pending);close();
+    pendingTimer=setTimeout(()=>{pending=null;schedule();},2000);schedule();
   }));
+  addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);
+  addEventListener('wheel',cancelPending,{passive:true});addEventListener('touchstart',cancelPending,{passive:true});
+  addEventListener('keydown',event=>{if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key))cancelPending();});
+  update();
 }
 
 function initializeContact(){
@@ -118,12 +135,6 @@ function applyStats(platform,stats){
   if(platform==='codeforces'){setStat('cf-solved',stats.solved);setStat('cf-rating',stats.rating);setStat('cf-rank',stats.rank.replace(/\b\w/g,letter=>letter.toUpperCase()));}
   else{setStat('lc-solved',stats.totalSolved);setStat('lc-ranking',stats.ranking);setStat('lc-easy',stats.easySolved);setStat('lc-medium',stats.mediumSolved);setStat('lc-hard',stats.hardSolved);}
 }
-function setStatus(platform,state,message){
-  const status=document.querySelector(`[data-live-status="${platform}"]`);
-  document.querySelector(`[data-platform-card="${platform}"]`).setAttribute('aria-busy',String(state==='loading'));
-  status.className=`live-status is-${state}`;status.querySelector('span').textContent=message;
-}
-function savedLabel(timestamp){return 'Snapshot · '+new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric'}).format(timestamp);}
 async function fetchJson(url,timeout=12000){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
   try{const response=await fetch(url,{cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}});if(!response.ok)throw new Error(`API ${response.status}`);return await response.json();}
@@ -142,9 +153,11 @@ async function fetchLeetCode(){
   catch(_){const p=await fetchJson('https://leetcode-api-faisalshohag.vercel.app/Shabab01',9000);return validate('leetcode',{...p,totalSolved:p.totalSolved??p.solvedProblem});}
 }
 async function refreshPlatform(platform,fetchStats){
-  const saved=latestSaved(platform);applyStats(platform,saved);setStatus(platform,'loading','Refreshing profile…');
-  try{const stats=await fetchStats();applyStats(platform,stats);save(platform,stats);setStatus(platform,'live','Live · updated just now');}
-  catch(_){setStatus(platform,'fallback',savedLabel(saved.updatedAt));}
+  const card=document.querySelector(`[data-platform-card="${platform}"]`);
+  applyStats(platform,latestSaved(platform));card.setAttribute('aria-busy','true');
+  try{const stats=await fetchStats();applyStats(platform,stats);save(platform,stats);}
+  catch(_){/* Keep the most recent saved profile without adding status text. */}
+  finally{card.setAttribute('aria-busy','false');}
 }
 function initializeProfiles(){
   let lastRefresh=0,refreshing=false;
@@ -152,6 +165,6 @@ function initializeProfiles(){
   void refresh();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastRefresh>600000)void refresh();});
 }
 
-initializeTheme();initializeNavigation();initializeProjects();initializeContact();
+initializeTheme();initializeNavigation();initializeContact();
 document.getElementById('currentYear').textContent=String(new Date().getFullYear());
 initializeProfiles();
