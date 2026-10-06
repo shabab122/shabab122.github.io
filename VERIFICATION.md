@@ -1,58 +1,46 @@
-# Verification — 3 October 2026 (Asia/Dhaka)
+# Verification — 6 October 2026
 
-## Source and requested changes
+## Requested refinement
 
-The update starts from public `main` commit `b64e6969b2dae36864500a60a055a6c79ceb7bef` (the working portfolio and updated résumé deployment). The six supplied screenshots were reviewed.
+Continues the delivered compact portfolio update. Both new reference screenshots were reviewed.
 
-- Simplified the introduction and increased the portrait crop by 8% using CSS.
-- Correct section and navigation order: About, Problem Solving, Tools, Selected Projects, Education, Contact; section labels 01 through 05.
-- Removed section descriptions, project filters, additional-project cards, and profile-refresh status text.
-- Kept the six existing selected projects and their repository links, in the requested order.
-- Added one compact link to all GitHub repositories.
-- Kept ratings/ranks inside the Codeforces and LeetCode cards.
-- Used the exact requested contact invitation, with email only and a copy button.
-- Preserved the portrait and current résumé file byte-for-byte. Education records and selected-project details remain from the current source.
-
-Coding snapshots verified on 2 October UTC / 3 October Dhaka:
-
-| Platform | Snapshot | Verification source |
+| Detail | Previous compact version | This version |
 | --- | --- | --- |
-| Codeforces `shabab_sa` | 242 unique accepted problems; rating 1407; Specialist | Official `user.info` and `user.status` APIs |
-| LeetCode `Shabab01` | 273 solved; 111 Easy / 142 Medium / 20 Hard; global rank 581623 | Official LeetCode profile GraphQL response |
+| Maximum desktop content width | 1040px | 1200px |
+| Portrait crop | Landscape, 5:4 | Square, 1:1 |
+| Portrait frame padding | 7px | 16px on every side |
+| Section number labels | 01–05 | Removed |
 
-Runtime statistics still refresh through the existing browser-compatible endpoints, with validated static/cached fallbacks.
+The portrait card follows the supplied reference's square photo, rounded outline, equal margins, and aligned details. It aligns with the introduction at the top on desktop and remains centered on mobile. Availability and location stay inside its frame. Its original JPEG is unchanged.
+
+Compact problem-solving cards, six projects in three columns/two rows on desktop, Education alignment, introduction wording, and email-only Contact remain in place. Navigation JavaScript, résumé PDF, and GitHub Pages workflow are byte-for-byte identical to the compact version.
 
 ## Browser checks
 
-16 integration/check groups passed with Playwright and Chromium 145. They cover:
+18 integration/check groups passed in Playwright with Chromium 145:
 
-- Requested headings, section order, six project cards, GitHub link, and email-only contact.
-- Offline profile statistics and ranks inside their two cards.
-- No horizontal page overflow at widths 320, 360, 390, 430, 640, 681, 768, 800, 900, 1024, 1280, and 1440 pixels.
-- Every navigation link, manual scrolling, and Contact activation when the final section cannot reach the sticky header.
-- Real smooth scrolling, including Education near the page end and upward navigation after reaching Contact.
-- Persistent light/dark themes, mobile menu closing, Escape focus, scrolling unlock, and email clipboard output.
-- Current résumé loading as a PDF in source and built-site previews.
-- Built pages loading fingerprinted assets with no uncaught JavaScript errors or missing local resources.
-- Mocked API refresh, unique accepted-problem counting, rank updates, outage fallback, and retention of a newer cached snapshot.
-- Blocked browser storage and a 320px preview with JavaScript disabled.
+- Unnumbered headings, requested section order, all six projects, repository links, and email-only Contact.
+- Shared container width/alignment and correct 3/2/1 project columns at 20 widths: 320, 360, 390, 430, 600, 601, 640, 680, 681, 768, 800, 900, 960, 961, 1024, 1280, 1440, 1600, 1908, and 2560px.
+- No horizontal page overflow or clipped card text at those widths.
+- Square portrait crop, symmetric padding/borders, and aligned Education details.
+- Manual scroll, all navigation links, real smooth scrolling, and active Contact at the bottom.
+- Persistent light/dark themes, mobile menu/Escape focus, scroll unlocking, and email copying.
+- The updated résumé opens in source and built previews.
+- Built hashed assets load with no JavaScript exceptions or missing local resources.
+- Mocked profile API updates, accepted-problem deduplication, cached outage fallback, and blocked-storage behavior.
+- Projects, profiles, and navigation remain readable without JavaScript at 320px.
 
-Desktop/mobile light/dark layouts were visually reviewed. Automated axe-core WCAG A/AA checks reported **zero violations in all four views**. This records the tested views rather than guaranteeing every browser or assistive technology.
+Desktop/mobile light/dark views were visually reviewed. Axe-core found zero WCAG A/AA violations in all four tested views; this records the tested views rather than guaranteeing every browser or assistive technology.
 
-## Build and archive checks
+## Deployment and archive checks
 
-- Source and built-site verification pass, including local assets, font paths, anchor targets, project/section order, canonical URL, and build metadata.
+- Source and built-site validation pass, including asset paths, anchors, canonical URL, project order, and metadata.
 - JavaScript syntax validation passes.
-- A build from the extracted delivery ZIP passes verification.
-- A simulated second commit and changed CSS/PDF produce new version metadata and new asset URLs; obsolete build output is removed.
-- The ZIP includes the existing GitHub Pages workflow and hidden deployment files. It excludes local build output, caches, repository history, and workspace metadata.
+- The extracted final ZIP builds and verifies successfully.
+- Simulated successive commits produce the correct deployment version metadata.
+- Changed CSS and résumé bytes produce new hashed URLs, and obsolete generated assets/output are removed.
+- The archive includes the workflow, hidden deployment files, updated instructions, and four current previews. Repository history, workspace metadata, caches, and local build output are excluded.
 
-The Pages workflow publishes the freshly verified `_site` artifact when changes reach `main`. No GitHub settings, commits, or live deployment were changed during this delivery.
+The included workflow publishes after the update reaches `main`. No repository settings, commits, or live deployment were changed during this delivery.
 
-## References
-
-- [Portfolio](https://shabab122.github.io/)
-- [Repository](https://github.com/shabab122/shabab122.github.io)
-- [Codeforces profile](https://codeforces.com/profile/shabab_sa)
-- [LeetCode profile](https://leetcode.com/u/Shabab01/)
-- [Official Pages workflow guidance](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+[Website](https://shabab122.github.io/) · [Repository](https://github.com/shabab122/shabab122.github.io) · [Push/deployment instructions](DEPLOY_BN.md)

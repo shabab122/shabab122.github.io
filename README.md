@@ -5,16 +5,17 @@
 
 A static portfolio with local fonts, light/dark themes, responsive navigation, and GitHub Pages deployment. No npm installation or API key is required.
 
-## October 2026 update
+## 6 October 2026 — refined layout
 
-- A plain, professional introduction and a slightly closer portrait crop.
-- Section order: About → **01 Problem Solving** → **02 Tools I build with** → **03 Selected Projects** → **04 Education** → **05 Want to collaborate?**
-- Section headings contain only the number and title. Supporting paragraphs, project filters, refresh labels, and additional-project cards have been removed.
-- Codeforces and LeetCode statistics, including ratings/ranks, remain inside their two cards and refresh silently. Saved snapshots remain visible when an API is unavailable.
-- Six selected projects, followed by one link to all GitHub repositories.
-- Email-only contact, with the requested invitation and an email-copy button.
-- Navigation follows the new order and correctly highlights Contact at the bottom of the page. Selecting Education remains accurate when its anchor is close to the page end.
-- The updated résumé PDF remains linked from the introduction.
+- One centered 1200px maximum content width for the introduction, profiles, tools, projects, education, contact, and navigation.
+- Shorter Codeforces and LeetCode cards with their existing data, ratings/ranks, and silent refresh.
+- Six selected projects in a **three-column, two-row desktop grid**, two columns on tablets, and one column on narrow phones.
+- Smaller project artwork and card spacing, while keeping the full descriptions, technology tags, and repository links.
+- Institution and location in Education share the same text size and baseline, and wrap neatly on narrow screens.
+- A smaller contact panel within the same content width, retaining the requested invitation, email, and copy button.
+- A square portrait crop inspired by the supplied reference, with 16px of equal frame padding, rounded corners, and the availability/location text aligned inside the frame. The portrait lines up with the introduction on desktop.
+- Current introduction wording from the deployed repository: “Prospective Software Engineer” and the owner's full-stack application description.
+- Simple section headings without number labels: About → **Problem Solving** → **Tools I build with** → **Selected Projects** → **Education** → **Want to collaborate?**
 
 | Order | Selected project | Repository |
 | --- | --- | --- |
@@ -25,7 +26,7 @@ A static portfolio with local fonts, light/dark themes, responsive navigation, a
 | 5 | Pac-Man AI | [Pac-Man-AI-Project](https://github.com/shabab122/Pac-Man-AI-Project) |
 | 6 | Campus Evacuation Planner | [Campus-Evacuation-Planner](https://github.com/shabab122/Campus-Evacuation-Planner) |
 
-The project list is curated in the source. Its illustrations are original SVG artwork. The portrait and updated résumé bytes are preserved from the latest repository source.
+The project list is curated in the source. Its illustrations are original SVG artwork. The portrait and updated résumé bytes are preserved from the latest repository source. The square portrait is a CSS crop; its original image remains available for future edits.
 
 ## Local preview and checks
 
@@ -60,7 +61,7 @@ Compare the response's `commit` with the deployed commit on `main`; a merged pul
 | File | Purpose |
 | --- | --- |
 | `index.html` | Introduction, headings, projects, profile snapshots, tools, education, links |
-| `assets/css/style.css` | Layout, portrait crop, responsive styles, themes |
+| `assets/css/style.css` | Shared width, compact cards, responsive grid, portrait crop, themes |
 | `assets/js/main.js` | Navigation, themes, email copying, profile refresh and snapshots |
 | `assets/Shabab_Ahmed_Resume_Updated_2026.pdf` | Current résumé |
 | `scripts/build.py` / `scripts/verify.py` | Fresh deployment build and validation |
