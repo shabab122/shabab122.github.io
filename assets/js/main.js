@@ -66,13 +66,14 @@ function initializeNavigation(){
     const marker=header+30,root=document.scrollingElement;
     const atEnd=root.scrollHeight>innerHeight+2&&Math.ceil(root.scrollTop+innerHeight)>=root.scrollHeight-2;
     if(pending){
-      const box=pending.getBoundingClientRect(),top=box.top;
+      const box=pending.getBoundingClientRect();
       const padding=parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)||0;
-      const targetScroll=root.scrollTop+top-padding,maxScroll=root.scrollHeight-innerHeight;
-      const clampedTarget=atEnd&&targetScroll>=maxScroll-2&&box.bottom>header&&box.top<innerHeight;
-      const arrived=(top>=-2&&top<=marker)||clampedTarget||(root.scrollTop<=2&&pending===sections[0]);
+      const maxScroll=Math.max(0,root.scrollHeight-innerHeight);
+      const targetScroll=Math.min(maxScroll,Math.max(0,root.scrollTop+box.top-padding));
+      // Wait for the real anchor destination, including browser-clamped targets.
+      const arrived=Math.abs(root.scrollTop-targetScroll)<=1;
       if(!arrived){activate(pending);return;}
-      anchor={section:pending,scrollY:root.scrollTop};pending=null;clearTimeout(pendingTimer);
+      anchor={section:pending,scrollY:targetScroll};pending=null;clearTimeout(pendingTimer);
     }
     if(anchor){
       const box=anchor.section.getBoundingClientRect();

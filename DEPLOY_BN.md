@@ -1,7 +1,9 @@
-# নতুন portfolio push ও deployment
+# Refined portfolio update — push ও deployment
 
 ওয়েবসাইট: [shabab122.github.io](https://shabab122.github.io/)  
 Repository: [shabab122/shabab122.github.io](https://github.com/shabab122/shabab122.github.io)
+
+Desktop-এ content width 1200px করা হয়েছে। Reference-এর মতো portrait square crop, সমান padding ও rounded frame-এ সাজানো হয়েছে। Section heading-এর 01–05 labels সরানো হয়েছে। Compact cards, ছয়টি project-এর তিনটি করে দুই row এবং Education-এর alignment আগের মতো রাখা হয়েছে।
 
 ## কীভাবে নতুন files রাখবে
 
@@ -11,24 +13,24 @@ ZIP extract করার পরে `shabab122.github.io` folder-এর **ভে�
 
 ## Terminal-এর উদাহরণ
 
-এখানে ZIP-এর নাম `Shabab-Portfolio-Clean-Update-2026.zip` এবং existing repository path `/home/sa/Desktop/MY PROJECT/shabab122.github.io` ধরা হয়েছে। তোমার path আলাদা হলে সেটি ব্যবহার করবে। `git status`-এ অসমাপ্ত নিজের পরিবর্তন থাকলে সেগুলো আগে সংরক্ষণ করবে।
+এখানে ZIP-এর নাম `Shabab-Portfolio-Refined-Update-2026.zip` এবং existing repository path `/home/sa/Desktop/MY PROJECT/shabab122.github.io` ধরা হয়েছে। তোমার path আলাদা হলে সেটি ব্যবহার করবে। `git status`-এ অসমাপ্ত নিজের পরিবর্তন থাকলে সেগুলো আগে সংরক্ষণ করবে।
 
 ```bash
-unzip -o "$HOME/Downloads/Shabab-Portfolio-Clean-Update-2026.zip" \
-  -d "$HOME/Downloads/Shabab-Portfolio-Clean-Update-2026"
+unzip -o "$HOME/Downloads/Shabab-Portfolio-Refined-Update-2026.zip" \
+  -d "$HOME/Downloads/Shabab-Portfolio-Refined-Update-2026"
 
 cd "/home/sa/Desktop/MY PROJECT/shabab122.github.io"
 git status --short
 git switch main
 git pull --ff-only origin main
-git switch -c portfolio/clean-update-2026
+git switch -c portfolio/refined-layout-2026
 
 rsync -av \
   --exclude='.git' \
   --exclude='.openai' \
   --exclude='_site' \
   --exclude='__pycache__' \
-  "$HOME/Downloads/Shabab-Portfolio-Clean-Update-2026/shabab122.github.io/" \
+  "$HOME/Downloads/Shabab-Portfolio-Refined-Update-2026/shabab122.github.io/" \
   ./
 
 python3 scripts/verify.py
@@ -39,8 +41,8 @@ git add index.html 404.html assets scripts .github .gitignore .nojekyll \
   robots.txt sitemap.xml README.md DEPLOY_BN.md VERIFICATION.md ATTRIBUTION.md docs
 
 git diff --cached --stat
-git commit -m "Simplify portfolio sections and fix active navigation"
-git push -u origin portfolio/clean-update-2026
+git commit -m "Refine portrait framing, widen layout, and simplify section headings"
+git push -u origin portfolio/refined-layout-2026
 ```
 
 এরপর GitHub-এ এই branch থেকে `main`-এ Pull Request খুলে merge করবে। **শুধু নতুন branch-এ push করলে live site বদলাবে না**—পরিবর্তন `main`-এ পৌঁছালে deployment হবে। সরাসরি `main`-এ কাজ করতে চাইলে branch তৈরির command বাদ দিয়ে শেষে `git push origin main` ব্যবহার করতে পারো।
