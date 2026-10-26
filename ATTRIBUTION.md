@@ -10,3 +10,5 @@
 ## Full-name branding — 26 October 2026
 
 The full-name wordmark and favicon were drawn specifically for Shabab Ahmed. Their lettering uses DejaVu Serif Bold and URW Z003 Medium Italic, converted to SVG paths. The style reference was [Farhan Sadaf’s portfolio](https://farhansadaf.github.io/); its logo asset is not included or reused. The portrait photograph is unchanged, with display framing handled by CSS.
+
+The final refinement uses the same custom full-name logo badge for the navbar and favicon. The photo crop was relaxed to show more of the shoulders; the original JPEG is unchanged.

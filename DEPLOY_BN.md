@@ -3,11 +3,11 @@
 ওয়েবসাইট: [shabab122.github.io](https://shabab122.github.io/)  
 Repository: [shabab122/shabab122.github.io](https://github.com/shabab122/shabab122.github.io)
 
-এই version-এ নাম এক লাইনে, নিচে bio, ছোট face-focused portrait এবং পুরো নামের নতুন logo আছে। বর্তমান short résumé এবং বাকি section-এর content রাখা হয়েছে।
+এই version-এ ছবির zoom আগের তুলনায় কমানো হয়েছে, যাতে head ও shoulders স্বাভাবিকভাবে দেখা যায়। Navbar-এ ফ্রেমসহ পরিষ্কার full-name logo badge আছে; একই logo favicon-এও ব্যবহৃত হচ্ছে। নাম এক লাইনে, নিচে bio, বর্তমান short résumé এবং বাকি section-এর content রাখা হয়েছে।
 
 ## Files copy করা
 
-1. `Shabab-Portfolio-Updated-2026-10-26.zip` extract করো।
+1. `Shabab-Portfolio-Final-2026-10-26.zip` extract করো।
 2. ভেতরের `shabab122.github.io` folder খুলে **তার ভেতরের files** existing repository root-এ copy করো। Hidden files-ও copy করবে: `.github`, `.gitignore`, `.nojekyll`।
 3. Existing `.git` directory রাখবে। Repository-র ভেতরে আরেকটি `shabab122.github.io` folder বানাবে না এবং শুধু ZIP upload করবে না।
 
@@ -27,7 +27,7 @@ git add index.html assets scripts .github .gitignore .nojekyll \
   404.html robots.txt sitemap.xml README.md DEPLOY_BN.md VERIFICATION.md ATTRIBUTION.md
 
 git diff --cached --stat
-git commit -m "style: compact hero, crop portrait, and add full-name branding"
+git commit -m "style: balance portrait crop and clarify navbar logo"
 ```
 
 তুমি `main` branch-এ থাকলে push:
