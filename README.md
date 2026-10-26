@@ -5,11 +5,11 @@
 
 A static portfolio with local fonts, light/dark themes, responsive navigation, and an automatic GitHub Pages build. No npm installation, API key, or application server is needed.
 
-## 26 October 2026 update
+## 26 October 2026 — final portrait and logo refinement
 
 - A compact introduction with **Shabab Ahmed on one line** and the existing professional bio directly below.
-- A smaller portrait card with a close face-focused crop, keeping the full hairline and a little shoulder context. The original photograph is preserved; the framing is controlled by CSS.
-- A custom full-name serif/script wordmark and matching full-name favicon, replacing the SA initials. The lettering is stored as vector paths, so no extra font service is needed.
+- A compact portrait card with a balanced head and shoulders crop, zoomed out from the previous close-up while retaining the full hairline. The original photograph is preserved; the framing is controlled by CSS.
+- A clearly framed full-name signature badge in the navbar, using the same logo asset as the favicon. The lettering is stored as vector paths, so no extra font service is needed.
 - Matching full-name branding on the social share card.
 - The existing 1200px desktop content width, compact profile cards, six selected projects, Education alignment, unnumbered headings, and email-only Contact.
 - The latest short résumé from the current repository remains linked.
@@ -47,8 +47,8 @@ Every build clears the old `_site` output and fingerprints changed CSS, JavaScri
 | --- | --- |
 | `index.html` | Introduction, projects, profile snapshots, links, tools, education, contact |
 | `assets/css/style.css` | Responsive layout, portrait framing, themes |
-| `assets/img/wordmark.svg` | Full-name header logo |
-| `assets/img/logo.svg` | Full-name favicon |
+| `assets/img/wordmark.svg` | Optional horizontal wordmark variant |
+| `assets/img/logo.svg` | Matching navbar logo badge and favicon |
 | `assets/js/main.js` | Active navigation, theme, mobile menu, email copying, profile refresh |
 | `assets/Shabab_Ahmed_Resume(Short).pdf` | Current short résumé |
 | `scripts/build.py` / `scripts/verify.py` | Deployment build and validation |
