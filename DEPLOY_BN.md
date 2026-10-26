@@ -1,81 +1,63 @@
-# Refined portfolio update — push ও deployment
+# Portfolio update — 26 October 2026
 
 ওয়েবসাইট: [shabab122.github.io](https://shabab122.github.io/)  
 Repository: [shabab122/shabab122.github.io](https://github.com/shabab122/shabab122.github.io)
 
-Desktop-এ content width 1200px করা হয়েছে। Reference-এর মতো portrait square crop, সমান padding ও rounded frame-এ সাজানো হয়েছে। Section heading-এর 01–05 labels সরানো হয়েছে। Compact cards, ছয়টি project-এর তিনটি করে দুই row এবং Education-এর alignment আগের মতো রাখা হয়েছে।
+এই version-এ নাম এক লাইনে, নিচে bio, ছোট face-focused portrait এবং পুরো নামের নতুন logo আছে। বর্তমান short résumé এবং বাকি section-এর content রাখা হয়েছে।
 
-## কীভাবে নতুন files রাখবে
+## Files copy করা
 
-ZIP extract করার পরে `shabab122.github.io` folder-এর **ভেতরের files** existing repository-র root-এ copy করবে। `.github`, `.gitignore`, `.nojekyll`-ও copy হবে। Existing `.git` directory থাকবে। শুধু ZIP upload করবে না এবং repository-র ভেতরে আরেকটি `shabab122.github.io` folder বানাবে না।
+1. `Shabab-Portfolio-Updated-2026-10-26.zip` extract করো।
+2. ভেতরের `shabab122.github.io` folder খুলে **তার ভেতরের files** existing repository root-এ copy করো। Hidden files-ও copy করবে: `.github`, `.gitignore`, `.nojekyll`।
+3. Existing `.git` directory রাখবে। Repository-র ভেতরে আরেকটি `shabab122.github.io` folder বানাবে না এবং শুধু ZIP upload করবে না।
 
-তোমার working Pages deployment-এর workflow এই ZIP-এ আছে। **Settings → Pages → Source → GitHub Actions** আগের মতো থাকলেই হবে।
+Existing repository-তে নিজের unfinished পরিবর্তন থাকলে copy করার আগে সংরক্ষণ করো।
 
-## Terminal-এর উদাহরণ
+## Check, commit, push
 
-এখানে ZIP-এর নাম `Shabab-Portfolio-Refined-Update-2026.zip` এবং existing repository path `/home/sa/Desktop/MY PROJECT/shabab122.github.io` ধরা হয়েছে। তোমার path আলাদা হলে সেটি ব্যবহার করবে। `git status`-এ অসমাপ্ত নিজের পরিবর্তন থাকলে সেগুলো আগে সংরক্ষণ করবে।
+Repository root-এ terminal খুলে চালাও:
 
 ```bash
-unzip -o "$HOME/Downloads/Shabab-Portfolio-Refined-Update-2026.zip" \
-  -d "$HOME/Downloads/Shabab-Portfolio-Refined-Update-2026"
-
-cd "/home/sa/Desktop/MY PROJECT/shabab122.github.io"
 git status --short
-git switch main
-git pull --ff-only origin main
-git switch -c portfolio/refined-layout-2026
-
-rsync -av \
-  --exclude='.git' \
-  --exclude='.openai' \
-  --exclude='_site' \
-  --exclude='__pycache__' \
-  "$HOME/Downloads/Shabab-Portfolio-Refined-Update-2026/shabab122.github.io/" \
-  ./
-
 python3 scripts/verify.py
 python3 scripts/build.py
 python3 scripts/verify.py _site
 
-git add index.html 404.html assets scripts .github .gitignore .nojekyll \
-  robots.txt sitemap.xml README.md DEPLOY_BN.md VERIFICATION.md ATTRIBUTION.md docs
+git add index.html assets scripts .github .gitignore .nojekyll \
+  404.html robots.txt sitemap.xml README.md DEPLOY_BN.md VERIFICATION.md ATTRIBUTION.md
 
 git diff --cached --stat
-git commit -m "Refine portrait framing, widen layout, and simplify section headings"
-git push -u origin portfolio/refined-layout-2026
+git commit -m "style: compact hero, crop portrait, and add full-name branding"
 ```
 
-এরপর GitHub-এ এই branch থেকে `main`-এ Pull Request খুলে merge করবে। **শুধু নতুন branch-এ push করলে live site বদলাবে না**—পরিবর্তন `main`-এ পৌঁছালে deployment হবে। সরাসরি `main`-এ কাজ করতে চাইলে branch তৈরির command বাদ দিয়ে শেষে `git push origin main` ব্যবহার করতে পারো।
-
-`rsync`-এ `--delete` নেই, তাই repository-র অন্য files নিজে থেকে মুছবে না। Preview করতে চাইলে `python3 -m http.server 8000 --directory _site` চালিয়ে [localhost:8000](http://localhost:8000/) খুলবে।
-
-## নতুন résumé-এর link
-
-এই ZIP-এ নতুন résumé আছে:
-
-`assets/Shabab_Ahmed_Resume_Updated_2026.pdf`
-
-`index.html`-এর **View résumé** link এই file-এই যায়। পরে résumé বদলালে একই নামে একই জায়গায় replace করো। নাম পরিবর্তন করলে `index.html`-এর link-ও পরিবর্তন করতে হবে; না হলে build-এ missing asset error হবে। PDF-এর contents বদলালে deployment build নতুন hashed URL বানাবে।
-
-## Push বা merge-এর পরে
-
-1. Repository-র **Actions → Deploy portfolio to GitHub Pages** খুলবে।
-2. `build` ও `deploy` দুটো job সফল হওয়া পর্যন্ত অপেক্ষা করবে।
-3. [shabab122.github.io](https://shabab122.github.io/) খুলবে। পুরোনো page দেখালে সফল deployment-এর পরে **Ctrl+Shift+R** দেবে।
-
-নতুন CSS/JS/PDF-এর URL contents অনুযায়ী বদলায়। GitHub/browser-এ পুরোনো HTML সাময়িকভাবে cache থাকতে পারে; push শেষ হওয়া এবং deployment শেষ হওয়া আলাদা ধাপ।
-
-Deployed version মিলিয়ে দেখতে:
+তুমি `main` branch-এ থাকলে push:
 
 ```bash
-git fetch origin main
-git rev-parse origin/main
-curl -fsSL -H 'Cache-Control: no-cache' \
-  "https://shabab122.github.io/version.json?check=$(date +%s)"
+git push origin main
 ```
 
-Response-এর `commit` deployed `main`-এর commit-এর সঙ্গে মিলবে। Pull Request merge করলে merge commit-এর hash মিলাতে হবে।
+অন্য branch-এ থাকলে নিজের branch push করে GitHub-এ `main`-এ Pull Request merge করবে। **Deployment trigger হয় পরিবর্তন `main`-এ পৌঁছালে।**
 
-Build fail হলে Actions-এর failed step-এর log দেখবে। Local `scripts/verify.py` source এবং `_site`-এর broken asset/anchor চেক করে। এই delivery-তে local build ও browser checks করা হয়েছে; live site তুমি push/merge করার পর update হবে।
+## Automatic deployment
 
-[GitHub-এর official publishing নির্দেশনা](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+তোমার working deployment workflow এই ZIP-এ রাখা হয়েছে। **Settings → Pages → Source → GitHub Actions** আগের মতোই থাকবে।
+
+Push/merge-এর পরে **Actions → Deploy portfolio to GitHub Pages** খুলে `build` এবং `deploy`—দুটো job সফল হওয়া পর্যন্ত অপেক্ষা করো। তারপর [shabab122.github.io](https://shabab122.github.io/) খুলবে। Successful deployment-এর পরেও পুরোনো HTML দেখালে **Ctrl+Shift+R** দাও।
+
+প্রতি build-এ পুরোনো output পরিষ্কার হয় এবং নতুন contents অনুযায়ী CSS, JS, logo/image ও PDF-এর URL তৈরি হয়। Deployed commit দেখতে পারো:
+
+[version.json](https://shabab122.github.io/version.json)
+
+এটির `commit` deployed `main` commit-এর সঙ্গে মিলবে। Pull Request merge করলে নতুন merge commit থাকতে পারে।
+
+## Résumé
+
+বর্তমান file: `assets/Shabab_Ahmed_Resume(Short).pdf`। **View résumé** link এই file-এই যায়। পরে update করতে একই জায়গায় একই নামে replace করো। নাম বদলালে `index.html`-এর link-ও বদলাবে।
+
+Local preview চাইলে:
+
+```bash
+python3 -m http.server 8023 --directory _site
+```
+
+[localhost:8023](http://localhost:8023/) খুলবে। GitStack-এর 3000/3002 ports ব্যবহার করতে হবে না।

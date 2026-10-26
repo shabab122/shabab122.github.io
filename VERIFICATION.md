@@ -1,46 +1,44 @@
-# Verification — 6 October 2026
+# Verification — 26 October 2026 (Asia/Dhaka)
 
-## Requested refinement
+## Source and scope
 
-Continues the delivered compact portfolio update. Both new reference screenshots were reviewed.
+Based on current public `main` commit `6828acc985938866bce1ff5cfee84de73f9618b1` (Modified the Resume). Both newly supplied screenshots and the reference portfolio/logo were inspected.
 
-| Detail | Previous compact version | This version |
-| --- | --- | --- |
-| Maximum desktop content width | 1040px | 1200px |
-| Portrait crop | Landscape, 5:4 | Square, 1:1 |
-| Portrait frame padding | 7px | 16px on every side |
-| Section number labels | 01–05 | Removed |
+- Full name on one line, followed by the existing bio.
+- Smaller portrait: 260px maximum on desktop, 220px on most phones, with a close face-focused CSS crop.
+- Custom full-name wordmark and matching favicon replace the SA initials. The share-card logo matches.
+- Existing section content/order, 1200px maximum content width, compact cards, six selected projects, Education alignment, and email-only Contact remain in place.
 
-The portrait card follows the supplied reference's square photo, rounded outline, equal margins, and aligned details. It aligns with the introduction at the top on desktop and remains centered on mobile. Availability and location stay inside its frame. Its original JPEG is unchanged.
-
-Compact problem-solving cards, six projects in three columns/two rows on desktop, Education alignment, introduction wording, and email-only Contact remain in place. Navigation JavaScript, résumé PDF, and GitHub Pages workflow are byte-for-byte identical to the compact version.
+The current short résumé PDF, original portrait JPEG, navigation/profile JavaScript, build script, and working Pages workflow are preserved byte-for-byte from the source commit.
 
 ## Browser checks
 
-18 integration/check groups passed in Playwright with Chromium 145:
+Nine integration groups passed in Playwright/Chromium 145. Tests covered 20 widths: 320, 360, 390, 430, 600, 601, 640, 680, 681, 768, 800, 900, 960, 961, 1024, 1280, 1440, 1600, 1908, and 2560px.
 
-- Unnumbered headings, requested section order, all six projects, repository links, and email-only Contact.
-- Shared container width/alignment and correct 3/2/1 project columns at 20 widths: 320, 360, 390, 430, 600, 601, 640, 680, 681, 768, 800, 900, 960, 961, 1024, 1280, 1440, 1600, 1908, and 2560px.
-- No horizontal page overflow or clipped card text at those widths.
-- Square portrait crop, symmetric padding/borders, and aligned Education details.
-- Manual scroll, all navigation links, real smooth scrolling, and active Contact at the bottom.
-- Persistent light/dark themes, mobile menu/Escape focus, scroll unlocking, and email copying.
-- The updated résumé opens in source and built previews.
-- Built hashed assets load with no JavaScript exceptions or missing local resources.
-- Mocked profile API updates, accepted-problem deduplication, cached outage fallback, and blocked-storage behavior.
-- Projects, profiles, and navigation remain readable without JavaScript at 320px.
+- One-line name, bio placement, no horizontal overflow or clipped card text.
+- No header/logo/navigation overlaps; shared container alignment.
+- Smaller square portrait, equal frame margins, and aligned caption/location text.
+- Three/two/one project columns at the existing desktop/tablet/phone breakpoints; all six repositories retained.
+- Education institution/location alignment.
+- Navigation active state for every section, bottom-of-page Contact, and stable state after actual smooth scrolling.
+- Persistent themes, mobile menu, Escape, Contact selection, and email copying.
+- Current short résumé opens in both source and built pages.
+- Built fingerprinted assets load without missing local resources or JavaScript exceptions.
+- Mobile content and navigation remain usable without JavaScript at 320px.
 
-Desktop/mobile light/dark views were visually reviewed. Axe-core found zero WCAG A/AA violations in all four tested views; this records the tested views rather than guaranteeing every browser or assistive technology.
+Axe-core WCAG A/AA checks returned zero violations for desktop/mobile in both light and dark themes. Internal browser previews were visually reviewed. No browser screenshots are packaged as deliverables.
 
-## Deployment and archive checks
+At a 1440 × 1000 viewport, the introduction height fell from 494.6px to 353.6px. The Problem Solving heading moved approximately 141px upward. Other viewports use their responsive layouts.
 
-- Source and built-site validation pass, including asset paths, anchors, canonical URL, project order, and metadata.
-- JavaScript syntax validation passes.
-- The extracted final ZIP builds and verifies successfully.
-- Simulated successive commits produce the correct deployment version metadata.
-- Changed CSS and résumé bytes produce new hashed URLs, and obsolete generated assets/output are removed.
-- The archive includes the workflow, hidden deployment files, updated instructions, and four current previews. Repository history, workspace metadata, caches, and local build output are excluded.
+## Build and delivery checks
 
-The included workflow publishes after the update reaches `main`. No repository settings, commits, or live deployment were changed during this delivery.
+- Source and built-site verification pass for asset paths, anchors, six-project order, canonical URL, and version metadata.
+- Navigation JavaScript syntax validation passes.
+- Final ZIP CRC/integrity checks pass; required hidden deployment files are included.
+- The extracted ZIP builds and verifies successfully.
+- A simulated successive commit records the new commit/version; changed CSS/PDF bytes produce new hashed URLs and obsolete generated output is removed.
+- Current résumé, original portrait, navigation JavaScript, and deployment workflow match the source commit.
 
-[Website](https://shabab122.github.io/) · [Repository](https://github.com/shabab122/shabab122.github.io) · [Push/deployment instructions](DEPLOY_BN.md)
+The archive excludes repository history, local build output, QA browsers/screenshots, caches, and workspace metadata. No repository settings, commits, or live deployment were changed. The included workflow deploys when the user's update reaches `main`, with the existing GitHub Actions Pages setting.
+
+[Website](https://shabab122.github.io/) · [Repository](https://github.com/shabab122/shabab122.github.io) · [Deployment instructions](DEPLOY_BN.md)
