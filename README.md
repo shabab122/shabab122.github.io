@@ -3,73 +3,59 @@
 **Website:** [shabab122.github.io](https://shabab122.github.io/)  
 **Repository:** [shabab122/shabab122.github.io](https://github.com/shabab122/shabab122.github.io)
 
-A static portfolio with local fonts, light/dark themes, responsive navigation, and GitHub Pages deployment. No npm installation or API key is required.
+A static portfolio with local fonts, light/dark themes, responsive navigation, and an automatic GitHub Pages build. No npm installation, API key, or application server is needed.
 
-## 6 October 2026 — refined layout
+## 26 October 2026 update
 
-- One centered 1200px maximum content width for the introduction, profiles, tools, projects, education, contact, and navigation.
-- Shorter Codeforces and LeetCode cards with their existing data, ratings/ranks, and silent refresh.
-- Six selected projects in a **three-column, two-row desktop grid**, two columns on tablets, and one column on narrow phones.
-- Smaller project artwork and card spacing, while keeping the full descriptions, technology tags, and repository links.
-- Institution and location in Education share the same text size and baseline, and wrap neatly on narrow screens.
-- A smaller contact panel within the same content width, retaining the requested invitation, email, and copy button.
-- A square portrait crop inspired by the supplied reference, with 16px of equal frame padding, rounded corners, and the availability/location text aligned inside the frame. The portrait lines up with the introduction on desktop.
-- Current introduction wording from the deployed repository: “Prospective Software Engineer” and the owner's full-stack application description.
-- Simple section headings without number labels: About → **Problem Solving** → **Tools I build with** → **Selected Projects** → **Education** → **Want to collaborate?**
+- A compact introduction with **Shabab Ahmed on one line** and the existing professional bio directly below.
+- A smaller portrait card with a close face-focused crop, keeping the full hairline and a little shoulder context. The original photograph is preserved; the framing is controlled by CSS.
+- A custom full-name serif/script wordmark and matching full-name favicon, replacing the SA initials. The lettering is stored as vector paths, so no extra font service is needed.
+- Matching full-name branding on the social share card.
+- The existing 1200px desktop content width, compact profile cards, six selected projects, Education alignment, unnumbered headings, and email-only Contact.
+- The latest short résumé from the current repository remains linked.
 
-| Order | Selected project | Repository |
-| --- | --- | --- |
-| 1 | GitStack | [GitStack](https://github.com/shabab122/GitStack) |
-| 2 | Norda E-commerce | [Ecommerce_Web_Project](https://github.com/shabab122/Ecommerce_Web_Project) |
-| 3 | PDF RAG Study Assistant | [Pdf-Rag-Study-Assistant](https://github.com/shabab122/Pdf-Rag-Study-Assistant) |
-| 4 | CarePulse | [CarePulse-Healthcare-Management-System](https://github.com/shabab122/CarePulse-Healthcare-Management-System) |
-| 5 | Pac-Man AI | [Pac-Man-AI-Project](https://github.com/shabab122/Pac-Man-AI-Project) |
-| 6 | Campus Evacuation Planner | [Campus-Evacuation-Planner](https://github.com/shabab122/Campus-Evacuation-Planner) |
+Section order: About → Problem Solving → Tools I build with → Selected Projects → Education → Contact.
 
-The project list is curated in the source. Its illustrations are original SVG artwork. The portrait and updated résumé bytes are preserved from the latest repository source. The square portrait is a CSS crop; its original image remains available for future edits.
+Selected repositories, in order: GitStack, Ecommerce_Web_Project, Pdf-Rag-Study-Assistant, CarePulse-Healthcare-Management-System, Pac-Man-AI-Project, and Campus-Evacuation-Planner. Projects use three columns on desktop, two on tablets, and one on narrow phones. The remaining repositories are linked from “View all repositories”.
 
-## Local preview and checks
+## Local preview
 
-Run from the directory containing `index.html`:
+Run inside the directory containing `index.html`:
 
 ```bash
 python3 scripts/verify.py
 python3 scripts/build.py
 python3 scripts/verify.py _site
-python3 -m http.server 8000 --directory _site
+python3 -m http.server 8023 --directory _site
 ```
 
-Open [localhost:8000](http://localhost:8000/). For a source preview, use `python3 -m http.server 8000` without `--directory _site`.
+Open [localhost:8023](http://localhost:8023/). Ports 3000 and 3002 are not used.
 
-## Publish the update
+## Automatic deployment
 
-Copy the **contents** of `shabab122.github.io/` from the ZIP into the existing repository root, including `.github`, `.gitignore`, and `.nojekyll`. Keep the existing `.git` directory. The repository root must contain `index.html`; uploading only the ZIP or nesting this directory inside the repository will not update the site.
+Copy the **contents** of `shabab122.github.io/` from the ZIP into the existing repository root. Include `.github`, `.gitignore`, and `.nojekyll`; keep the repository's existing `.git` directory. The root must contain `index.html`.
 
-The included workflow publishes `_site` when changes reach `main`. The Pages source must be **GitHub Actions**; the existing working deployment setting can stay as it is. Push to `main`, or push a branch and merge its pull request into `main`, then wait for both jobs in **Deploy portfolio to GitHub Pages** to finish. See [DEPLOY_BN.md](DEPLOY_BN.md) for Bengali copy/push instructions.
+The included **Deploy portfolio to GitHub Pages** workflow builds and publishes after a push to `main`, or after a pull request is merged into `main`. Keep **Settings → Pages → Source → GitHub Actions**, matching the working deployment. Wait for both the `build` and `deploy` jobs to succeed, then open [shabab122.github.io](https://shabab122.github.io/).
 
-Each build removes previous output and gives changed CSS, JavaScript, images, fonts, and PDFs new content-based filenames. `version.json` records the deployed commit and build time. After deployment succeeds, a hard refresh can help if the browser still displays cached HTML.
+Every build clears the old `_site` output and fingerprints changed CSS, JavaScript, images, fonts, and PDFs. The generated `version.json` records the deployed commit and build time. A changed file gets a changed asset URL; no service worker is registered.
 
-```bash
-git rev-parse HEAD
-curl -fsSL -H 'Cache-Control: no-cache' "https://shabab122.github.io/version.json?check=$(date +%s)"
-```
+[DEPLOY_BN.md](DEPLOY_BN.md) contains the Bengali copy/push instructions.
 
-Compare the response's `commit` with the deployed commit on `main`; a merged pull request may create a new merge commit.
-
-## Maintaining the site
+## Maintenance
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Introduction, headings, projects, profile snapshots, tools, education, links |
-| `assets/css/style.css` | Shared width, compact cards, responsive grid, portrait crop, themes |
-| `assets/js/main.js` | Navigation, themes, email copying, profile refresh and snapshots |
-| `assets/Shabab_Ahmed_Resume_Updated_2026.pdf` | Current résumé |
-| `scripts/build.py` / `scripts/verify.py` | Fresh deployment build and validation |
-| `.github/workflows/pages.yml` | Deployment after a push to `main` |
-| `docs/previews/` | Updated desktop/mobile light/dark screenshots |
+| `index.html` | Introduction, projects, profile snapshots, links, tools, education, contact |
+| `assets/css/style.css` | Responsive layout, portrait framing, themes |
+| `assets/img/wordmark.svg` | Full-name header logo |
+| `assets/img/logo.svg` | Full-name favicon |
+| `assets/js/main.js` | Active navigation, theme, mobile menu, email copying, profile refresh |
+| `assets/Shabab_Ahmed_Resume(Short).pdf` | Current short résumé |
+| `scripts/build.py` / `scripts/verify.py` | Deployment build and validation |
+| `.github/workflows/pages.yml` | Automatic deployment on `main` |
 
-To update the résumé, replace **`assets/Shabab_Ahmed_Resume_Updated_2026.pdf`** at that same path. If its filename changes, also change its link in `index.html` before building. The build verifies the linked file and creates a new PDF URL whenever its contents change.
+Replace the résumé at **`assets/Shabab_Ahmed_Resume(Short).pdf`** to update it. If its filename changes, also update the link in `index.html`. A PDF content change creates a new hashed deployment URL.
 
-Codeforces refresh uses its public API. LeetCode refresh uses public community API endpoints; both platforms have validated static/cached fallbacks. No service worker is registered.
+Codeforces refresh uses its public API; LeetCode refresh uses public community endpoints. Both have cached/static fallbacks when their APIs are unavailable. This layout update preserves their existing data and refresh behavior.
 
-[Verification results](VERIFICATION.md) · [Asset attribution](ATTRIBUTION.md) · [Official Pages workflow guidance](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+[Verification](VERIFICATION.md) · [Attribution](ATTRIBUTION.md)

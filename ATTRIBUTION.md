@@ -1,7 +1,12 @@
 # Attribution
 
-- Original portrait and `Shabab_Ahmed_Resume_V2.pdf`: preserved from the supplied portfolio ZIP.
-- Monogram, project illustrations, social image, and inline interface icons: original vector artwork created for this redesign. The project illustrations are conceptual covers, not screenshots.
+- Original portrait and current `Shabab_Ahmed_Resume(Short).pdf`: preserved from the current repository source.
+- Full-name branding, project illustrations, social image, and inline interface icons: vector artwork created for this portfolio. The project illustrations are conceptual covers, not screenshots.
 - Codeforces and LeetCode marks identify the linked programming platforms; their brands belong to their respective owners.
 - Manrope and DM Mono: distributed under the SIL Open Font License 1.1. The original licenses are included in `assets/fonts/OFL-Manrope.txt` and `assets/fonts/OFL-DMMono.txt`.
 - Project descriptions: based on the public repositories and READMEs at https://github.com/shabab122, reviewed on 1 October 2026.
+
+
+## Full-name branding — 26 October 2026
+
+The full-name wordmark and favicon were drawn specifically for Shabab Ahmed. Their lettering uses DejaVu Serif Bold and URW Z003 Medium Italic, converted to SVG paths. The style reference was [Farhan Sadaf’s portfolio](https://farhansadaf.github.io/); its logo asset is not included or reused. The portrait photograph is unchanged, with display framing handled by CSS.
